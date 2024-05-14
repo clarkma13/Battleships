@@ -1,23 +1,17 @@
 
 /**
- * Program used to trial different components of my battleships project
+ * My battleships project
  *
  * Max Clarke
- * 14/5/24
+ * 15/5/24
  */
-import java.util.Scanner;
-public class Trialling
+public class Project
 {
     public static void main(String[] args){
-        Scanner keyboard = new Scanner(System.in);
         final int WIDTH = 11;
         final int HEIGHT = 11;
-        final int SHIPS = 5;
-        int placingShipX = 0;
-        int placingShipY = 0;
         String grid[][] = new String[WIDTH][HEIGHT];
         String [] letters = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
-        String [] ships = {"Patrol Boat (2)", "Submarine (3)", "Destroyer (3)", "Battleship (4)", "Carrier (5)"};
         
         System.out.println("Your guesses:");
         //Sets top row of array as numbers
@@ -64,17 +58,5 @@ public class Trialling
             }
             System.out.println("");
         }
-        for(int n=0; n<SHIPS; n++){
-            System.out.println("Where would you like to place your "+ships[n]);
-            System.out.println("Letter A-J:");
-            for(int i=0; i<letters.length; i++){
-                if(letters[i].equals(keyboard.nextLine())){
-                    placingShipY = i;
-                }
-                System.out.println(placingShipY);
-            }
-            
-        }
-        
     }
 }
