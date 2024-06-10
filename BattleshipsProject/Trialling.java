@@ -25,48 +25,28 @@ public class Trialling
         int computerMissileX = 0;
         int computerMissileY = 0;
         String playerGrid[][] = new String[WIDTH][HEIGHT];
-        String computerGrid [][] = new String[WIDTH][HEIGHT];
+        String computerShipsGrid [][] = new String[WIDTH][HEIGHT];
+        String computerSeaGrid [][] = new String[WIDTH][HEIGHT];
         String [] letters = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
         String [] ships = {"Patrol Boat (2)", "Submarine (3)", "Destroyer (3)", "Battleship (4)", "Carrier (5)"};
+        String computerShipTile = ".";
         String shipDirection;
         boolean playerWon = false;
         boolean computerWon = false;
     
-        //Sets top row of array as numbers
-        computerGrid[0][0] = " ";
-        for(int x=1; x<WIDTH; x++){
-                computerGrid[x][0] = String.valueOf(x);
-        }
-        for(int y=1; y<HEIGHT; y++){
-                computerGrid[0][y] = letters[y-1];
-        }
-        //Fills the rest of the grid with blank
-        for(int y=1; y<HEIGHT; y++){
-            for(int x=1; x<WIDTH; x++){
-                computerGrid[x][y] = BLANKTILE; 
-            }
-        }
-    
-        //Sets top row of array as numbers
-        playerGrid[0][0] = " ";
-        for(int x=1; x<WIDTH; x++){
-                playerGrid[x][0] = String.valueOf(x);
-        }
-        for(int y=1; y<HEIGHT; y++){
-                playerGrid[0][y] = letters[y-1];
-        }
-        //Fills the rest of the grid with blank
-        for(int y=1; y<HEIGHT; y++){
-            for(int x=1; x<WIDTH; x++){
-                playerGrid[x][y] = BLANKTILE; 
-            }
-        }
+        
+        computerShipsGrid = gridFiller(computerShipsGrid, BLANKTILE, letters, HEIGHT, WIDTH);
+        playerGrid = gridFiller(playerGrid, BLANKTILE, letters, HEIGHT, WIDTH);
+        computerSeaGrid = gridFiller(computerSeaGrid, BLANKTILE, letters, HEIGHT, WIDTH);
+        
 
-        gridPrinter(HEIGHT, WIDTH, playerGrid, computerGrid);
+
+        gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
         
         for(int n=0; n<SHIPS; n++){
             if(n==0){
                 currentShipLength = 2;
+                computerShipTile = "A";
             } else if(n==1 || n==2){
                 currentShipLength = 3;
             } else if(n==3){
@@ -93,10 +73,10 @@ public class Trialling
             shipDirection = keyboard.nextLine();
             
             shipPlacement(placingShipX, placingShipY, shipDirection, currentShipLength, SHIPTILE, playerGrid);
-            gridPrinter(HEIGHT, WIDTH, playerGrid, computerGrid);
+            gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
         }
-        computerShipPlacement(computerGrid, SHIPS, SHIPTILE);
-        gridPrinter(HEIGHT, WIDTH, playerGrid, computerGrid);
+        computerShipPlacement(computerShipsGrid, SHIPS, computerShipTile);
+        gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
         
         while(playerWon==false && computerWon==false){
             
@@ -113,8 +93,8 @@ public class Trialling
             missileX = keyboard.nextInt();
             keyboard.nextLine();
         
-            while(computerGrid[missileX][missileY].equals(MISS)||computerGrid[missileX][missileY].equals(HIT)){
-                gridPrinter(HEIGHT, WIDTH, playerGrid, computerGrid);
+            while(computerSeaGrid[missileX][missileY].equals(MISS)||computerSeaGrid[missileX][missileY].equals(HIT)){
+                gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
                 System.out.println("Input Error: Space already guessed");
                 System.out.println("Please select alternative coordinates");
                 System.out.println("Letter A-J:");
@@ -128,20 +108,41 @@ public class Trialling
                 missileX = keyboard.nextInt();
                 keyboard.nextLine();
             }
-            if(computerGrid[missileX][missileY].equals(SHIPTILE)){
-                computerGrid[missileX][missileY] = HIT;
-            } else if(computerGrid[missileX][missileY].equals(BLANKTILE)){
-                computerGrid[missileX][missileY] = MISS; 
+            if(computerShipsGrid[missileX][missileY].equals("A") || computerShipsGrid[missileX][missileY].equals("B") || computerShipsGrid[missileX][missileY].equals("C") || computerShipsGrid[missileX][missileY].equals("D") || computerShipsGrid[missileX][missileY].equals("E")){
+                computerShipTile = computerShipsGrid[missileX][missileY];
+                computerSeaGrid[missileX][missileY] = HIT;
+                computerShipsGrid[missileX][missileY] = HIT;
+            } else if(computerShipsGrid[missileX][missileY].equals(BLANKTILE)){
+                computerSeaGrid[missileX][missileY] = MISS; 
+                computerShipsGrid[missileX][missileY] = MISS; 
             }
-            gridPrinter(HEIGHT, WIDTH, playerGrid, computerGrid);
+            gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
             
-            if(playerWinChecker(computerGrid, SHIPTILE, HEIGHT, WIDTH)==true){
+            
+            
+            if(playerWinChecker(computerShipsGrid, SHIPTILE, HEIGHT, WIDTH)==true){
                 playerWon=true;
             }
             
             System.out.println("Computers turn");
-            computerMissileX = (int)(Math.random()*10+1);
-            computerMissileY = (int)(Math.random()*10+1);
+            if(playerGrid[computerMissileX][computerMissileY] == HIT){
+                if(Math.random()>0.5){
+                    if(Math.random()>0.5){
+                        computerMissileX++;
+                    } else {
+                        computerMissileX--;
+                    }
+                } else {
+                    if(Math.random()>0.5){
+                        computerMissileY++;
+                    } else {
+                        computerMissileY--;
+                    }
+                }
+            } else {
+                computerMissileX = (int)(Math.random()*10+1);
+                computerMissileY = (int)(Math.random()*10+1);
+            }
             while(playerGrid[computerMissileX][computerMissileY].equals(MISS)||playerGrid[computerMissileX][computerMissileY].equals(HIT)){
                 computerMissileX = (int)(Math.random()*10+1);
                 computerMissileY = (int)(Math.random()*10+1);
@@ -155,14 +156,23 @@ public class Trialling
                 computerWon=true;
             }
             
-            gridPrinter(HEIGHT, WIDTH, playerGrid, computerGrid);
+            gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
+            
+            
+            
+            if(sunkShipChecker(computerShipsGrid, HEIGHT, WIDTH, computerShipTile) == true){
+                for(int z=0; z<5; z++){
+                    if(computerShipTile == letters[z]){
+                        System.out.println("You sunk the "+ships[z]);
+                    }
+                }
+            }
         }
+        gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
         if(playerWon == true){
-            gridPrinter(HEIGHT, WIDTH, playerGrid, computerGrid);
             winMessage("Congratulations, you ");
         }
         if(computerWon == true){
-            gridPrinter(HEIGHT, WIDTH, playerGrid, computerGrid);
             winMessage("Unlucky, the computer ");
         }
     }
@@ -173,7 +183,7 @@ public class Trialling
         int n = 0;
         for(int y=1; y<h; y++){
             for(int x=1; x<w; x++){
-                if(grid[x][y].equals(ship)){
+                if(grid[x][y].equals("A") || grid[x][y].equals("B") || grid[x][y].equals("C") || grid[x][y].equals("D") || grid[x][y].equals("E")){
                     n++;
                 }
             }
@@ -199,98 +209,108 @@ public class Trialling
             return(false);
         }
     }
+    static boolean sunkShipChecker(String[][] grid, int h, int w, String ship){
+        int n = 0;
+        for(int y=1; y<h; y++){
+            for(int x=1; x<w; x++){
+                if(grid[x][y].equals(ship)){
+                    n++;
+                }
+            }
+        }
+        if(n == 0){
+            return(true);
+        }else{
+            return(false);
+        }
+    }
     static String[][] computerShipPlacement(String[][] grid, int SHIPS, String ship){
-        int length;
+        // int length;
         for(int n=0; n<SHIPS; n++){
-            boolean goodShip = true;
-            if(n==0){
-                length = 2;
-            } else if(n==1 || n==2){
-                length = 3;
-            } else if(n==3){
-                length = 4;
-            } else {
-                length = 5;
-            }
-            int dir = (int)Math.floor(Math.random()*2);
-            int x;
-            int y;
-            
-            
-            if(dir == 0){
-                x = (int)Math.round(Math.random()*(10-length));
-                y = (int)Math.round(Math.random()*10);
-                
-                
-                for(int i=0; i<length; i++){
-                    if(grid[x+i][y].equals(ship)){
-                        goodShip = false;
-                    }
-                }
-                
-                x = (int)Math.round(Math.random()*(10-length));
-                y = (int)Math.round(Math.random()*10);
-                
-                if(goodShip==true){
-                for(int i=0; i<length; i++){
-                    grid[x+i+1][y+1] = ship;
-                }
-                }
-            }else if(dir == 1){
-                x = (int)Math.round(Math.random()*10);
-                y = (int)Math.round(Math.random()*(10-length));
-                
-                
-                for(int i=0; i<length; i++){
-                    if(grid[x][y+1].equals(ship)){
-                        goodShip = false;
-                    }
-                }
-                
-                x = (int)Math.round(Math.random()*10);
-                y = (int)Math.round(Math.random()*(10-length));
-                
-                if(goodShip==true){
-                for(int i=0; i<length; i++){
-                    grid[x+1][y+i+1] = ship;
-                }
-                }
-            }
-            
+            // boolean goodShip = false;
             // if(n==0){
-                // for(int i=0; i<2; i++){
-                    // grid[i+1][1] = ship;
-                // }
-            // } else if(n==1){
-                // for(int i=0; i<3; i++){
-                    // grid[i+1][2] = ship;
-                // }
-            // } else if(n==2){
-                // for(int i=0; i<3; i++){
-                    // grid[i+1][3] = ship;
-                // }
+                // length = 2;
+            // } else if(n==1 || n==2){
+                // length = 3;
             // } else if(n==3){
-                // for(int i=0; i<4; i++){
-                    // grid[i+1][4] = ship;
-                // }
+                // length = 4;
             // } else {
-                // for(int i=0; i<5; i++){
-                    // grid[i+1][5] = ship;
+                // length = 5;
+            // }
+            // int dir = (int)Math.floor(Math.random()*2);
+            // int x;
+            // int y;
+            
+            
+            // if(dir == 0){
+                // x = (int)Math.round(Math.random()*(10-length));
+                // y = (int)Math.round(Math.random()*10);
+                
+                
+                // for(int i=0; i<length; i++){
+                    // if(grid[x+i][y].equals(ship)){
+                        // goodShip = false;
+                    // }else{
+                        // goodShip = true;
+                    // }
+                // }
+                
+                
+                
+                // if(goodShip==true){
+                // for(int i=0; i<length; i++){
+                    // grid[x+i][y+1] = ship;
+                // }
+                // }
+            // }else if(dir == 1){
+                // x = (int)Math.round(Math.random()*10);
+                // y = (int)Math.round(Math.random()*(10-length));
+                
+                
+                // for(int i=0; i<length; i++){
+                    // if(grid[x][y+1].equals(ship)){
+                        // goodShip = false;
+                    // }
+                // }
+                
+                
+                
+                // if(goodShip==true){
+                // for(int i=0; i<length; i++){
+                    // grid[x+1][y+i+1] = ship;
+                // }
                 // }
             // }
+            
+            if(n==0){
+                ship = "A";
+                for(int i=0; i<2; i++){
+                    grid[i+1][1] = ship;
+                }
+            } else if(n==1){
+                ship = "B";
+                for(int i=0; i<3; i++){
+                    grid[i+1][2] = ship;
+                }
+            } else if(n==2){
+                ship = "C";
+                for(int i=0; i<3; i++){
+                    grid[i+1][3] = ship;
+                }
+            } else if(n==3){
+                ship = "D";
+                for(int i=0; i<4; i++){
+                    grid[i+1][4] = ship;
+                }
+            } else {
+                ship = "E";
+                for(int i=0; i<5; i++){
+                    grid[i+1][5] = ship;
+                }
+            }
         }
         return(grid);
     }
-    // static int yCoordinate(String[] ships, Scanner keyboard){
-        // System.out.println("Where would you like to place your "+ships[n]+"?");
-            // System.out.println("Letter A-J:");
-            // String ySelect = keyboard.nextLine();
-            // for(int i=0; i<letters.length; i++){
-                // if(letters[i].equals(ySelect.toUpperCase())){
-                    // placingShipY = i+1;
-                // }
-            // }
-    // }
     static String[][] shipPlacement(int x, int y, String dir, int length, String ship, String[][] grid){
         if(dir.equals("a")){
             for(int i=0; i<length; i++){
@@ -319,5 +339,22 @@ public class Trialling
             }
             System.out.println("");
         }
+    }
+    static String[][] gridFiller(String[][] grid, String blank, String[] letters, int h, int w){
+        //Sets top row of array as numbers
+        grid[0][0] = " ";
+        for(int x=1; x<w; x++){
+                grid[x][0] = String.valueOf(x);
+        }
+        for(int y=1; y<h; y++){
+                grid[0][y] = letters[y-1];
+        }
+        //Fills the rest of the grid with blank
+        for(int y=1; y<h; y++){
+            for(int x=1; x<w; x++){
+                grid[x][y] = blank; 
+            }
+        }
+        return(grid);
     }
 }
