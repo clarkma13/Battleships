@@ -43,10 +43,12 @@ public class Trialling
 
         gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
         
+        // Human placing ships
+        
         for(int n=0; n<SHIPS; n++){
+            // Sets ship length
             if(n==0){
                 currentShipLength = 2;
-                computerShipTile = "A";
             } else if(n==1 || n==2){
                 currentShipLength = 3;
             } else if(n==3){
@@ -55,8 +57,9 @@ public class Trialling
                 currentShipLength = 5;
             }
             
+            // Takes y coordinate
             System.out.println("Where would you like to place your "+ships[n]+"?");
-            System.out.println("Letter A-J:");
+            System.out.println("(Letter A-J)");
             String ySelect = keyboard.nextLine();
             for(int i=0; i<letters.length; i++){
                 if(letters[i].equals(ySelect.toUpperCase())){
@@ -64,24 +67,58 @@ public class Trialling
                 }
             }
             
-            System.out.println("Number 1-10:");
+            // Takes x coordinate
+            System.out.println("(Number 1-10)");
             placingShipX = keyboard.nextInt();
             keyboard.nextLine();
             
+            // Takes direction
             System.out.println("Would you like the ship to go across or down?");
             System.out.println("(a/d)");
             shipDirection = keyboard.nextLine();
             
+            while(shipDirection.equals("a") && placingShipX+currentShipLength>11 ||
+                  shipDirection.equals("d") && placingShipY+currentShipLength>11){
+                gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
+                System.out.println("Input Error: Ship out of bounds");
+                System.out.println("Please select alternative coordinates");
+                
+                // Takes y coordinate
+                System.out.println("Where would you like to place your "+ships[n]+"?");
+                System.out.println("(Letter A-J)");
+                ySelect = keyboard.nextLine();
+                for(int i=0; i<letters.length; i++){
+                    if(letters[i].equals(ySelect.toUpperCase())){
+                        placingShipY = i+1;
+                    }
+                }
+            
+                // Takes x coordinate
+                System.out.println("(Number 1-10)");
+                placingShipX = keyboard.nextInt();
+                keyboard.nextLine();
+            
+                // Takes direction
+                System.out.println("Would you like the ship to go across or down?");
+                System.out.println("(a/d)");
+                shipDirection = keyboard.nextLine();
+                
+            }
+            
+            // Calls function to place the ship
             shipPlacement(placingShipX, placingShipY, shipDirection, currentShipLength, SHIPTILE, playerGrid);
             gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
         }
+        
+        // Places computer ships
         computerShipPlacement(computerShipsGrid, SHIPS, computerShipTile);
         gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
         
         while(playerWon==false && computerWon==false){
-            
+            // Players turn
             System.out.println("Your turn");
             System.out.println("Where would you like to fire your missile?");
+            // Takes y coordinate
             System.out.println("Letter A-J:");
             String ySelect = keyboard.nextLine();
             for(int i=0; i<letters.length; i++){
@@ -89,10 +126,12 @@ public class Trialling
                     missileY = i+1;
                 }
             }   
+            // Takes x coordinate
             System.out.println("Number 1-10:");
             missileX = keyboard.nextInt();
             keyboard.nextLine();
         
+            // Checks that tile has not already been guessed and asks for different coordinate
             while(computerSeaGrid[missileX][missileY].equals(MISS)||computerSeaGrid[missileX][missileY].equals(HIT)){
                 gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
                 System.out.println("Input Error: Space already guessed");
@@ -108,6 +147,8 @@ public class Trialling
                 missileX = keyboard.nextInt();
                 keyboard.nextLine();
             }
+            
+            // Checks for hit or miss and displays on screen
             if(computerShipsGrid[missileX][missileY].equals("A") || computerShipsGrid[missileX][missileY].equals("B") || computerShipsGrid[missileX][missileY].equals("C") || computerShipsGrid[missileX][missileY].equals("D") || computerShipsGrid[missileX][missileY].equals("E")){
                 computerShipTile = computerShipsGrid[missileX][missileY];
                 computerSeaGrid[missileX][missileY] = HIT;
@@ -115,14 +156,17 @@ public class Trialling
             } else if(computerShipsGrid[missileX][missileY].equals(BLANKTILE)){
                 computerSeaGrid[missileX][missileY] = MISS; 
                 computerShipsGrid[missileX][missileY] = MISS; 
+                computerShipTile = computerShipsGrid[missileX][missileY];
             }
             gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
             
             
-            
+            // Calls player win checker and ends game if true
             if(playerWinChecker(computerShipsGrid, SHIPTILE, HEIGHT, WIDTH)==true){
                 playerWon=true;
             }
+            
+            // Computers turn
             
             System.out.println("Computers turn");
             if(playerGrid[computerMissileX][computerMissileY] == HIT){
