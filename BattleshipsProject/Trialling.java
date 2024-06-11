@@ -68,8 +68,13 @@ public class Trialling
             }
             
             // Takes x coordinate
+            System.out.println("Please choose an x coordinate");
             System.out.println("(Number 1-10)");
             placingShipX = keyboard.nextInt();
+            
+            while(placingShipX<1 || placingShipX>10){
+                placingShipX = getXInput("Please enter a valid x coordinate");
+            }
             keyboard.nextLine();
             
             // Takes direction
@@ -104,6 +109,7 @@ public class Trialling
                 shipDirection = keyboard.nextLine();
                 
             }
+            
             
             // Calls function to place the ship
             shipPlacement(placingShipX, placingShipY, shipDirection, currentShipLength, SHIPTILE, playerGrid);
@@ -219,6 +225,17 @@ public class Trialling
         if(computerWon == true){
             winMessage("Unlucky, the computer ");
         }
+    }
+    static int getXInput(String msg){
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println(msg);
+        while(!keyboard.hasNextInt()){
+            keyboard.nextLine();
+            System.out.println("Input Error: Invalid input");
+            System.out.println("Please enter a new x coordinate");
+            System.out.println("(Number 1-10)");
+        }
+        return(keyboard.nextInt());
     }
     static void winMessage(String msg){
         System.out.println(msg+"won");
