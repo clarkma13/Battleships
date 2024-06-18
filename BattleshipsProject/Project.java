@@ -6,6 +6,8 @@
  * 15/5/24
  */
 import java.util.Scanner;
+import java.util.Arrays;
+
 public class Project
 {
     public static void main(String[] args){
@@ -53,23 +55,11 @@ public class Project
                 currentShipLength = 5;
             }
 
-            // Takes y coordinate
-            System.out.println("Where would you like to place your "+ships[n]+"?");
-            System.out.println("(Letter A-J)");
-            String ySelect = keyboard.nextLine();
-            while(!(ySelect.equals("A") || ySelect.equals("B") || ySelect.equals("C") || ySelect.equals("D") || ySelect.equals("E") || ySelect.equals("F") || ySelect.equals("G") || ySelect.equals("H") || ySelect.equals("I") || ySelect.equals("J") ||
-                    ySelect.equals("a") || ySelect.equals("b") || ySelect.equals("c") || ySelect.equals("d") || ySelect.equals("e") || ySelect.equals("f") || ySelect.equals("g") || ySelect.equals("h") || ySelect.equals("i") || ySelect.equals("j"))){
-                System.out.println("Input Error: Invalid input");
-                System.out.println("Please choose a new y coordinate");
-                System.out.println("(Letter A-J)");
-                ySelect = keyboard.nextLine();
-            }
             
-            for(int i=0; i<letters.length; i++){
-                if(letters[i].equals(ySelect.toUpperCase())){
-                    placingY = i+1;
-                }
-            }
+            System.out.println("Where would you like to place your "+ships[n]+"?");
+            
+            // Takes y coordinate
+            placingY = getYInput(letters);
 
             // Takes x coordinate
 
@@ -91,26 +81,17 @@ public class Project
 
             while(shipDirection.equals("a") && placingX+currentShipLength>11 ||
             shipDirection.equals("d") && placingY+currentShipLength>11){
+                int c = 0;
+                for(int i=0; i<currentShipLength; i++){
+                    
+                }
                 gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
                 System.out.println("Input Error: Ship out of bounds");
                 System.out.println("Please select alternative coordinates");
-
-                // Takes y coordinate
                 System.out.println("Where would you like to place your "+ships[n]+"?");
-                System.out.println("(Letter A-J)");
-                ySelect = keyboard.nextLine();
-                while(!(ySelect.equals("A") || ySelect.equals("B") || ySelect.equals("C") || ySelect.equals("D") || ySelect.equals("E") || ySelect.equals("F") || ySelect.equals("G") || ySelect.equals("H") || ySelect.equals("I") || ySelect.equals("J") ||
-                    ySelect.equals("a") || ySelect.equals("b") || ySelect.equals("c") || ySelect.equals("d") || ySelect.equals("e") || ySelect.equals("f") || ySelect.equals("g") || ySelect.equals("h") || ySelect.equals("i") || ySelect.equals("j"))){
-                    System.out.println("Input Error: Invalid input");
-                    System.out.println("Please choose a new y coordinate");
-                    System.out.println("(Letter A-J)");
-                    ySelect = keyboard.nextLine();
-                }
-                for(int i=0; i<letters.length; i++){
-                    if(letters[i].equals(ySelect.toUpperCase())){
-                        placingY = i+1;
-                    }
-                }
+                
+                // Takes y coordinate
+                placingY = getYInput(letters);
 
                 // Takes x coordinate
                 System.out.println("(Number 1-10)");
@@ -142,21 +123,10 @@ public class Project
             // Players turn
             System.out.println("Your turn");
             System.out.println("Where would you like to fire your missile?");
+            
             // Takes y coordinate
-            System.out.println("(Letter A-J)");
-            String ySelect = keyboard.nextLine();
-            while(!(ySelect.equals("A") || ySelect.equals("B") || ySelect.equals("C") || ySelect.equals("D") || ySelect.equals("E") || ySelect.equals("F") || ySelect.equals("G") || ySelect.equals("H") || ySelect.equals("I") || ySelect.equals("J") ||
-                    ySelect.equals("a") || ySelect.equals("b") || ySelect.equals("c") || ySelect.equals("d") || ySelect.equals("e") || ySelect.equals("f") || ySelect.equals("g") || ySelect.equals("h") || ySelect.equals("i") || ySelect.equals("j"))){
-                System.out.println("Input Error: Invalid input");
-                System.out.println("Please choose a new y coordinate");
-                System.out.println("(Letter A-J)");
-                ySelect = keyboard.nextLine();
-            }
-            for(int i=0; i<letters.length; i++){
-                if(letters[i].equals(ySelect.toUpperCase())){
-                        placingY = i+1;
-                }
-            }   
+            placingY = getYInput(letters);
+               
             // Takes x coordinate
             System.out.println("(Number 1-10)");
             placingX = 0;
@@ -167,16 +137,12 @@ public class Project
                 gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
                 System.out.println("Input Error: Space already guessed");
                 System.out.println("Please select alternative coordinates");
-                System.out.println("Letter A-J:");
-                ySelect = keyboard.nextLine();
-                for(int i=0; i<letters.length; i++){
-                    if(letters[i].equals(ySelect.toUpperCase())){
-                        placingY = i+1;
-                    }
-                }   
-                System.out.println("Number 1-10:");
-                placingX = keyboard.nextInt();
-                keyboard.nextLine();
+                
+                placingY = getYInput(letters);
+                  
+                System.out.println("(Number 1-10)");
+                placingX = 0;
+                placingX = getXInput("Input Error: Invalid input", "Please choose a new x coordinate", "(Number 1-10)", placingX);
             }
 
             // Checks for hit or miss and displays on screen
@@ -199,6 +165,7 @@ public class Project
             // Computers turn
 
             System.out.println("Computers turn");
+            // If the last guess was a hit, give an equal chance of guessing one space to the left, right, up, or down
             if(playerGrid[computerMissileX][computerMissileY] == HIT){
                 if(Math.random()>0.5){
                     if(Math.random()>0.5){
@@ -253,10 +220,6 @@ public class Project
     static int getXInput(String msg1, String msg2, String msg3, int placingX){
         Scanner keyboard = new Scanner(System.in);
         while(placingX<1 || placingX>10){
-            // keyboard.nextLine();
-            // System.out.println(msg1);
-            // System.out.println(msg2);
-            // System.out.println(msg3);
             while(!keyboard.hasNextInt()){
                 keyboard.nextLine();
                 System.out.println(msg1);
@@ -265,15 +228,35 @@ public class Project
             }
             placingX = keyboard.nextInt();
             keyboard.nextLine();
-            System.out.println(msg1);
-            System.out.println(msg2);
-            System.out.println(msg3);
+            if(placingX<1 || placingX>10){
+                System.out.println(msg1);
+                System.out.println(msg2);
+                System.out.println(msg3);
+            }
         }
-
         return(placingX);
     }
     
-
+    static int getYInput(String[] letters){
+        Scanner keyboard = new Scanner(System.in);
+        int y = 0;
+        boolean found = false;
+        
+        System.out.println("(Letter A-J)");
+        String ySelect = keyboard.nextLine();
+        while(!Arrays.asList(letters).contains(ySelect.toUpperCase())){
+            System.out.println("Input Error: Invalid input");
+            System.out.println("Please choose a new y coordinate");
+            System.out.println("(Letter A-J)");
+            ySelect = keyboard.nextLine();
+        }    
+        for(int i=0; i<letters.length; i++){
+            if(letters[i].equals(ySelect.toUpperCase())){
+                y = i+1;
+            }
+        }   
+        return(y);
+    }
 
     static void winMessage(String msg){
         System.out.println(msg+"won");
