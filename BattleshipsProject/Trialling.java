@@ -30,7 +30,7 @@ public class Trialling
         String [] letters = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
         String [] ships = {"Patrol Boat (2)", "Submarine (3)", "Destroyer (3)", "Battleship (4)", "Carrier (5)"};
         String computerShipTile = ".";
-        String shipDirection;
+        String shipDirection = "";
         boolean playerWon = false;
         boolean computerWon = false;
 
@@ -51,39 +51,13 @@ public class Trialling
             } else {
                 currentShipLength = 5;
             }
+            
+            boolean goodShip = false;
 
-            System.out.println("Where would you like to place your "+ships[n]+"?");
-            // Takes y coordinate
-            placingY = getYInput(letters);
-
-            // Takes x coordinate
-
-            System.out.println("(Number 1-10)");
-            placingX = 0;
-            placingX = getXInput("Input Error: Invalid input", "Please choose a new x coordinate", "(Number 1-10)", placingX);
-
-
-            // Takes direction
-            System.out.println("Would you like the ship to go across or down?");
-            System.out.println("(a/d)");
-            shipDirection = keyboard.nextLine();
-            while(!(shipDirection.equals("a") || shipDirection.equals("d"))){
-                System.out.println("Input Error: Invalid input");
-                System.out.println("(a/d)");
-                shipDirection = keyboard.nextLine();
-            }
-
-            while(shipDirection.equals("a") && placingX+currentShipLength>11 ||
-            shipDirection.equals("d") && placingY+currentShipLength>11){
-                int c = 0;
-                for(int i=0; i<currentShipLength; i++){
-
-                }
-                gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
-                System.out.println("Input Error: Ship out of bounds");
-                System.out.println("Please select alternative coordinates");
+            while(goodShip == false){
+                int count = 0;
                 System.out.println("Where would you like to place your "+ships[n]+"?");
-
+            
                 // Takes y coordinate
                 placingY = getYInput(letters);
 
@@ -91,6 +65,7 @@ public class Trialling
                 System.out.println("(Number 1-10)");
                 placingX = 0;
                 placingX = getXInput("Input Error: Invalid input", "Please choose a new x coordinate", "(Number 1-10)", placingX);
+
 
                 // Takes direction
                 System.out.println("Would you like the ship to go across or down?");
@@ -101,7 +76,50 @@ public class Trialling
                     System.out.println("(a/d)");
                     shipDirection = keyboard.nextLine();
                 }
+
+                while(shipDirection.equals("a") && placingX+currentShipLength>11 ||
+                shipDirection.equals("d") && placingY+currentShipLength>11){
+                    gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
+                    System.out.println("Input Error: Ship out of bounds");
+                    System.out.println("Please select alternative coordinates");
+                    System.out.println("Where would you like to place your "+ships[n]+"?");
+
+                    // Takes y coordinate
+                    placingY = getYInput(letters);
+
+                    // Takes x coordinate
+                    System.out.println("(Number 1-10)");
+                    placingX = 0;
+                    placingX = getXInput("Input Error: Invalid input", "Please choose a new x coordinate", "(Number 1-10)", placingX);
+
+                    // Takes direction
+                    System.out.println("Would you like the ship to go across or down?");
+                    System.out.println("(a/d)");
+                    shipDirection = keyboard.nextLine();
+                    while(!(shipDirection.equals("a") || shipDirection.equals("d"))){
+                        System.out.println("Input Error: Invalid input");
+                        System.out.println("(a/d)");
+                        shipDirection = keyboard.nextLine();
+                    }
+                }
+                
+                for(int i=0; i<currentShipLength; i++){
+                    if(playerGrid[placingX+i][placingY].equals(SHIPTILE)){
+                        count++;
+                    }
+                }
+                
+                if(count == 0){
+                    goodShip = true;
+                } else if(count > 0){
+                    goodShip = false;
+                    gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
+                    System.out.println("Input Error: Ship overlap");
+                    System.out.println("Please choose new coordinates");
+                }
+                
             }
+            
 
             // Calls function to place the ship
             shipPlacement(placingX, placingY, shipDirection, currentShipLength, SHIPTILE, playerGrid);
@@ -109,7 +127,7 @@ public class Trialling
         }
 
         // Places computer ships
-        computerShipPlacement(computerSeaGrid, SHIPS, computerShipTile, letters);
+        computerShipPlacement(computerShipsGrid, SHIPS, computerShipTile, letters);
         gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
 
         while(playerWon==false && computerWon==false){
@@ -305,23 +323,18 @@ public class Trialling
     static String[][] computerShipPlacement(String[][] grid, int SHIPS, String ship, String[] letters){
         int length;
         for(int n=0; n<SHIPS; n++){
-            boolean goodShip = false;
+            
             int count = 0;
             if(n==0){
-                length = 2;
-                // ship = "A";
+                length = 2;            
             } else if(n==1){
-                length = 3;
-                // ship = "B";
+                length = 3;             
             } else if(n==2){
-                length = 3;
-                // ship = "C";
+                length = 3;            
             } else if(n==3){
-                length = 4;
-                // ship = "D";
+                length = 4;               
             } else {
-                length = 5;
-                // ship = "E";
+                length = 5;                
             }
             ship = letters[n];
             int dir = (int)Math.floor(Math.random()*2);
@@ -329,8 +342,8 @@ public class Trialling
             int y = 0;
 
             if(dir == 0){
-                x = (int)Math.round(Math.random()*(10-length)+1);
-                y = (int)Math.round(Math.random()*10+1);
+                x = (int)Math.floor(Math.random()*(10-length)+1);
+                y = (int)Math.floor(Math.random()*10+1);
 
                 for(int i=0; i<length; i++){
                     if(Arrays.asList(letters).contains(grid[x+i][y])){
@@ -340,31 +353,25 @@ public class Trialling
                 
                 while(count != 0){
                     count = 0;
-                    x = (int)Math.round(Math.random()*(10-length)+1);
-                    y = (int)Math.round(Math.random()*10+1);
+                    x = (int)Math.floor(Math.random()*(10-length)+1);
+                    y = (int)Math.floor(Math.random()*10+1);
 
                     for(int i=0; i<length; i++){
                         if(Arrays.asList(letters).contains(grid[x+i][y])){
                             count++;
                         }
                     }
-                
-                    // if(count == 0){
-                        // goodShip = true;
-                    // }else{
-                        // goodShip = false;
-                    // }
                 }
                 
 
-                // if(goodShip==true){
-                    for(int i=0; i<length; i++){
-                        grid[x+i][y] = ship;
-                    }
-                // }
+                
+                for(int i=0; i<length; i++){
+                    grid[x+i][y] = ship;
+                }
+                
             }else if(dir == 1){
-                x = (int)Math.round(Math.random()*10+1);
-                y = (int)Math.round(Math.random()*(10-length)+1);
+                x = (int)Math.floor(Math.random()*10+1);
+                y = (int)Math.floor(Math.random()*(10-length)+1);
 
                 for(int i=0; i<length; i++){
                     if(Arrays.asList(letters).contains(grid[x][y+i])){
@@ -374,56 +381,23 @@ public class Trialling
                 
                 while(count != 0){
                     count = 0;
-                    x = (int)Math.round(Math.random()*10+1);
-                    y = (int)Math.round(Math.random()*(10-length)+1);
+                    x = (int)Math.floor(Math.random()*10+1);
+                    y = (int)Math.floor(Math.random()*(10-length)+1);
 
                     for(int i=0; i<length; i++){
                         if(Arrays.asList(letters).contains(grid[x][y+i])){
                             count++;
-                            System.out.println("overlap");
                         }
                     }
-                
-                    // if(count == 0){
-                        // goodShip = true;
-                    // }else{
-                        // goodShip = false;
-                    // }
                 }
 
-                // if(goodShip==true){
-                    for(int i=0; i<length; i++){
-                        grid[x][y+i] = ship;
-                    }
-                // }
+                
+                for(int i=0; i<length; i++){
+                    grid[x][y+i] = ship;
+                }
+                
             }
 
-            // if(n==0){
-            // ship = "A";
-            // for(int i=0; i<2; i++){
-            // grid[i+1][1] = ship;
-            // }
-            // } else if(n==1){
-            // ship = "B";
-            // for(int i=0; i<3; i++){
-            // grid[i+1][2] = ship;
-            // }
-            // } else if(n==2){
-            // ship = "C";
-            // for(int i=0; i<3; i++){
-            // grid[i+1][3] = ship;
-            // }
-            // } else if(n==3){
-            // ship = "D";
-            // for(int i=0; i<4; i++){
-            // grid[i+1][4] = ship;
-            // }
-            // } else {
-            // ship = "E";
-            // for(int i=0; i<5; i++){
-            // grid[i+1][5] = ship;
-            // }
-            // }
         }
         return(grid);
     }
