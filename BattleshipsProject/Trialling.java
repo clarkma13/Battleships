@@ -375,6 +375,13 @@ public class Trialling
         }
     }
 
+    /*
+     * This function places the computer ships
+     * Sets the length of the ship
+     * Chooses a random direction, and then generates random x and y coordinates that will be within the grids bounds
+     * Then checks for overlap with existing ships. If there is some overlap it will randomise x and y until there is none
+     * Places a ship and then repeats until all ships are placed and then returns the grid with ships in it
+     */
     static String[][] computerShipPlacement(String[][] grid, int SHIPS, String ship, String[] letters){
         int length;
         for(int n=0; n<SHIPS; n++){
@@ -457,6 +464,11 @@ public class Trialling
         return(grid);
     }
 
+    /*
+     * Takes the player input for x, y, and direction
+     * Places a ship on the player grid using those values
+     * Returns new grid
+     */
     static String[][] shipPlacement(int x, int y, String dir, int length, String ship, String[][] grid){
         if(dir.equals("a")){
             for(int i=0; i<length; i++){
@@ -470,6 +482,9 @@ public class Trialling
         return(grid);
     }
 
+    /*
+     * Clears the screen, then prints out the computer and player grids, with labels for the player above each
+     */
     static void gridPrinter(int h, int w, String[][] pGrid, String[][] cGrid){
         System.out.println('\u000c');
         System.out.println("Your Guesses:");
@@ -488,12 +503,17 @@ public class Trialling
         }
     }
 
+    /*
+     * Takes a 2d array and fills it with values to make a 'blank' starting grid with labels on x and y axes 
+     */
     static String[][] gridFiller(String[][] grid, String blank, String[] letters, int h, int w){
-        //Sets top row of array as numbers
+        
         grid[0][0] = " ";
+        //Sets top row of array as numbers
         for(int x=1; x<w; x++){
             grid[x][0] = String.valueOf(x);
         }
+        //Sets left column of array as letters
         for(int y=1; y<h; y++){
             grid[0][y] = letters[y-1];
         }
