@@ -2,6 +2,7 @@
 comment0.target=Project
 comment1.params=args
 comment1.target=void\ main(java.lang.String[])
+comment1.text=\r\n\ This\ is\ the\ main\ function\r\n\ It\ holds\ all\ of\ the\ variables\r\n\ First\ it\ asks\ foir\ player\ input\ to\ place\ their\ ships\ and\ then\ calls\ shipPlacement\ function\r\n\ Then\ calls\ computerShipPlacement\r\n\ Then\ it\ enters\ a\ while\ loop\ that\ takes\ turns\ between\ the\ player\ and\ computer\ until\ a\ win\ condition\ is\ reached.\r\n
 comment10.params=h\ w\ pGrid\ cGrid
 comment10.target=void\ gridPrinter(int,\ int,\ java.lang.String[][],\ java.lang.String[][])
 comment10.text=\r\n\ Clears\ the\ screen,\ then\ prints\ out\ the\ computer\ and\ player\ grids,\ with\ labels\ for\ the\ player\ above\ each\r\n

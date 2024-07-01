@@ -1,6 +1,6 @@
 
 /**
- * My battleships project
+ * My battleships project for the y12 programming assessment
  *
  * Max Clarke
  * 15/5/24
@@ -10,15 +10,24 @@ import java.util.Arrays;
 
 public class Project
 {
+    /**
+     * This is the main function
+     * It holds all of the variables
+     * First it asks foir player input to place their ships and then calls shipPlacement function
+     * Then calls computerShipPlacement
+     * Then it enters a while loop that takes turns between the player and computer until a win condition is reached.
+     */
     public static void main(String[] args){
         Scanner keyboard = new Scanner(System.in);
+        // Constants
         final int WIDTH = 11;
         final int HEIGHT = 11;
         final int SHIPS = 5;
         final String SHIPTILE = "■";
         final String BLANKTILE = ".";
         final String HIT = "X";
-        final String MISS = "O";
+        final String MISS = "o";
+        // Variables
         int currentShipLength = 0;
         int placingX = 0;
         int placingY = 0;
@@ -34,6 +43,7 @@ public class Project
         boolean playerWon = false;
         boolean computerWon = false;
 
+        // Fill all 2d arrays with the default grid
         computerShipsGrid = gridFiller(computerShipsGrid, BLANKTILE, letters, HEIGHT, WIDTH);
         playerGrid = gridFiller(playerGrid, BLANKTILE, letters, HEIGHT, WIDTH);
         computerSeaGrid = gridFiller(computerSeaGrid, BLANKTILE, letters, HEIGHT, WIDTH);
@@ -168,7 +178,7 @@ public class Project
                 placingX = getXInput("Input Error: Invalid input", "Please choose a new x coordinate", "(Number 1-10)", placingX);
             }
 
-            // Checks for hit or miss and displays on screen and refreshes grid
+            // Checks for hit or miss and displays on screen, edits the hidden and the shown grids and refreshes screen
             if(computerShipsGrid[placingX][placingY].equals("A") || computerShipsGrid[placingX][placingY].equals("B") || computerShipsGrid[placingX][placingY].equals("C") || computerShipsGrid[placingX][placingY].equals("D") || computerShipsGrid[placingX][placingY].equals("E")){
                 computerShipTile = computerShipsGrid[placingX][placingY];
                 computerSeaGrid[placingX][placingY] = HIT;
@@ -214,7 +224,7 @@ public class Project
                 computerMissileX = (int)(Math.random()*10+1);
                 computerMissileY = (int)(Math.random()*10+1);
             }
-            // Checks whether guess was hit or miss
+            // Checks whether guess was hit or miss and edits grid to show
             if(playerGrid[computerMissileX][computerMissileY].equals(SHIPTILE)){
                 playerGrid[computerMissileX][computerMissileY] = HIT;
             } else if(playerGrid[computerMissileX][computerMissileY].equals(BLANKTILE)){
@@ -244,11 +254,19 @@ public class Project
             winMessage("Congratulations, you ");
         }
         if(computerWon == true){
+            for(int y=1; y<HEIGHT; y++){
+                for(int x=1; x<WIDTH; x++){
+                    if(Arrays.asList(letters).contains(computerShipsGrid[x][y])){
+                        computerSeaGrid[x][y] = SHIPTILE;
+                    }
+                }
+            }
+            gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
             winMessage("Unlucky, the computer ");
         }
     }
 
-    /*
+    /**
      * Takes player input for an x coordinate and checks that it is valid
      * Has to be an integer and between 1 and 10
      * If it fails an error message is printed and a new coordinate is requested
@@ -274,7 +292,7 @@ public class Project
         return(placingX);
     }
 
-    /*
+    /**
      * Takes player input for an y coordinate and checks that it is valid
      * Has to be included in the array of letters (A-J)
      * If it fails an error message is printed and a new coordinate is requested
@@ -301,7 +319,7 @@ public class Project
         return(y);
     }
 
-    /*
+    /**
      * Prints out a win message depending on whether player or computer won
      */
     static void winMessage(String msg){
@@ -309,7 +327,7 @@ public class Project
     }
 
     
-    /*
+    /**
      * Checks if the player has won
      * For each tile on the grid, if it contains a ship, add 1 to n
      * If n equals 0 then there are no ships left and therefore the player has won
@@ -331,7 +349,7 @@ public class Project
         }
     }
 
-    /*
+    /**
      * Checks if the computer has won
      * For each tile on the grid, if it contains a ship, add 1 to n
      * If n equals 0 then there are no ships left and therefore the computer has won
@@ -353,7 +371,7 @@ public class Project
         }
     }
 
-    /*
+    /**
      * Takes the tile that has just been hit
      * For each tile on the grid, if it contains that ship, add 1 to n
      * If n equals 0 then there is none of that ship left and therefore the ship has been sunk
@@ -375,7 +393,7 @@ public class Project
         }
     }
 
-    /*
+    /**
      * This function places the computer ships
      * Sets the length of the ship
      * Chooses a random direction, and then generates random x and y coordinates that will be within the grids bounds
@@ -464,7 +482,7 @@ public class Project
         return(grid);
     }
 
-    /*
+    /**
      * Takes the player input for x, y, and direction
      * Places a ship on the player grid using those values
      * Returns new grid
@@ -482,7 +500,7 @@ public class Project
         return(grid);
     }
 
-    /*
+    /**
      * Clears the screen, then prints out the computer and player grids, with labels for the player above each
      */
     static void gridPrinter(int h, int w, String[][] pGrid, String[][] cGrid){
@@ -503,7 +521,7 @@ public class Project
         }
     }
 
-    /*
+    /**
      * Takes a 2d array and fills it with values to make a 'blank' starting grid with labels on x and y axes 
      */
     static String[][] gridFiller(String[][] grid, String blank, String[] letters, int h, int w){

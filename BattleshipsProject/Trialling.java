@@ -18,7 +18,7 @@ public class Trialling
         final String SHIPTILE = "■";
         final String BLANKTILE = ".";
         final String HIT = "X";
-        final String MISS = "O";
+        final String MISS = "o";
         int currentShipLength = 0;
         int placingX = 0;
         int placingY = 0;
@@ -244,11 +244,19 @@ public class Trialling
             winMessage("Congratulations, you ");
         }
         if(computerWon == true){
+            for(int y=1; y<HEIGHT; y++){
+                for(int x=1; x<WIDTH; x++){
+                    if(Arrays.asList(letters).contains(computerShipsGrid[x][y])){
+                        computerSeaGrid[x][y] = SHIPTILE;
+                    }
+                }
+            }
+            gridPrinter(HEIGHT, WIDTH, playerGrid, computerSeaGrid);
             winMessage("Unlucky, the computer ");
         }
     }
 
-    /*
+    /**
      * Takes player input for an x coordinate and checks that it is valid
      * Has to be an integer and between 1 and 10
      * If it fails an error message is printed and a new coordinate is requested
@@ -274,7 +282,7 @@ public class Trialling
         return(placingX);
     }
 
-    /*
+    /**
      * Takes player input for an y coordinate and checks that it is valid
      * Has to be included in the array of letters (A-J)
      * If it fails an error message is printed and a new coordinate is requested
@@ -301,7 +309,7 @@ public class Trialling
         return(y);
     }
 
-    /*
+    /**
      * Prints out a win message depending on whether player or computer won
      */
     static void winMessage(String msg){
@@ -309,7 +317,7 @@ public class Trialling
     }
 
     
-    /*
+    /**
      * Checks if the player has won
      * For each tile on the grid, if it contains a ship, add 1 to n
      * If n equals 0 then there are no ships left and therefore the player has won
@@ -331,7 +339,7 @@ public class Trialling
         }
     }
 
-    /*
+    /**
      * Checks if the computer has won
      * For each tile on the grid, if it contains a ship, add 1 to n
      * If n equals 0 then there are no ships left and therefore the computer has won
@@ -353,7 +361,7 @@ public class Trialling
         }
     }
 
-    /*
+    /**
      * Takes the tile that has just been hit
      * For each tile on the grid, if it contains that ship, add 1 to n
      * If n equals 0 then there is none of that ship left and therefore the ship has been sunk
@@ -375,7 +383,7 @@ public class Trialling
         }
     }
 
-    /*
+    /**
      * This function places the computer ships
      * Sets the length of the ship
      * Chooses a random direction, and then generates random x and y coordinates that will be within the grids bounds
@@ -464,7 +472,7 @@ public class Trialling
         return(grid);
     }
 
-    /*
+    /**
      * Takes the player input for x, y, and direction
      * Places a ship on the player grid using those values
      * Returns new grid
@@ -482,7 +490,7 @@ public class Trialling
         return(grid);
     }
 
-    /*
+    /**
      * Clears the screen, then prints out the computer and player grids, with labels for the player above each
      */
     static void gridPrinter(int h, int w, String[][] pGrid, String[][] cGrid){
